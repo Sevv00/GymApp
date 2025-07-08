@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "Offers")
 public class Offer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     private Long id;
 
@@ -42,10 +42,10 @@ public class Offer {
     private Boolean isPermanent;
 
     @Column(name = "offer_expired_date")
-    private Timestamp offerExpiredDate;
+    private LocalDateTime offerExpiredDate;
 
     @Column(name = "created_at")
-    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", referencedColumnName = "id")
@@ -53,4 +53,13 @@ public class Offer {
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+
+    //Delete this if a bidirectional relation with Class is not needed
+    @OneToOne(mappedBy = "offer", cascade = CascadeType.ALL)
+    private ClassEntity classEntity;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,11 +16,11 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "Users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     private Long id;
 
@@ -44,10 +44,10 @@ public class User {
     private UserRole userRole;
 
     @Column(name = "created_at")
-    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+    private LocalDateTime createdAt;
 
     @Column(name = "last_logged_in_date")
-    private Timestamp lastLoggedInDate = new Timestamp(System.currentTimeMillis());
+    private LocalDateTime lastLoggedInDate;
 
     @Column(name = "is_google")
     private Boolean isGoogle = false;
@@ -56,7 +56,7 @@ public class User {
     private UserDiscount discount;
 
     @Column(name = "ad_agreement")
-    private Boolean addAgreement = false;
+    private Boolean adAgreement = false;
 
     @Column(name = "is_active")
     private Boolean isActive = true;
@@ -64,6 +64,18 @@ public class User {
     @Column(name = "avatar")
     private byte[] avatar;
 
-    @OneToMany(mappedBy = "Users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Offer> offers = new HashSet<>();
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Offer> purchases = new HashSet<>();
+
+    @OneToMany(mappedBy = "instructorId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ClassEntity> employeeClasses = new HashSet<>();
+
+    @OneToMany(mappedBy = "registredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ClassRegistration> customerClasses = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        lastLoggedInDate = LocalDateTime.now();
+    }
 }
