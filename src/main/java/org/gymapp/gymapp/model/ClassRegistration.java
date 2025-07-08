@@ -30,7 +30,7 @@ public class ClassRegistration {
     @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = false)
     private ClassEntity classEntity;
 
-    @Column(name = "registered_at")
+    @Column(name = "registered_at", updatable = false)
     private LocalDateTime registrationDate;
 
     @Column(name = "is_active")

@@ -30,7 +30,7 @@ public class Purchase {
     @JoinColumn(name = "offer_id", referencedColumnName = "id")
     private Offer offer;
 
-    @Column(name = "purchase_date")
+    @Column(name = "purchase_date", updatable = false)
     private LocalDateTime purchaseDate;
 
     @Column(name = "valid_until")

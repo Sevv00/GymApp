@@ -46,7 +46,7 @@ public class Offer {
     @Column(name = "offer_expired_date")
     private LocalDateTime offerExpiredDate;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

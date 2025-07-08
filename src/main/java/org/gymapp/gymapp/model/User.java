@@ -43,7 +43,7 @@ public class User {
     @Column(name = "user_role", nullable = false)
     private UserRole userRole;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "last_logged_in_date")

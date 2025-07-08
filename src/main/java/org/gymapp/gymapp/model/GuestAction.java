@@ -35,7 +35,7 @@ public class GuestAction {
     @JoinColumn(name = "purchase_id", nullable = false)
     private Purchase purchaseId;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdDate;
 
     @PrePersist
