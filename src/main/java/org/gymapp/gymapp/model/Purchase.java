@@ -37,7 +37,7 @@ public class Purchase {
     private LocalDateTime validUntil;
 
     //Delete this if a bidirectional relation with Class is not needed
-    @OneToOne(mappedBy = "purchaseId", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "purchaseId", cascade = CascadeType.ALL, orphanRemoval = true)
     private GuestAction guestAction;
 
     @PrePersist

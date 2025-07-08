@@ -32,7 +32,7 @@ public class GuestAction {
     private String phoneNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_id")
+    @JoinColumn(name = "purchase_id", nullable = false)
     private Purchase purchaseId;
 
     @Column(name = "created_at")
