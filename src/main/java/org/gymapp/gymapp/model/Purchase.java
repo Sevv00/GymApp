@@ -39,5 +39,12 @@ public class Purchase {
     @PrePersist
     protected void onCreate() {
         purchaseDate = LocalDateTime.now();
+
+        if (offer != null && offer.getDurationDays() != null) {
+            this.validUntil = this.purchaseDate.plusDays(offer.getDurationDays());
+        }
+        else {
+            this.validUntil = null;
+        }
     }
 }
