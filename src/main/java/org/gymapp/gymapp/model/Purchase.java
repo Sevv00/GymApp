@@ -27,7 +27,7 @@ public class Purchase {
     private User buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "offer_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "offer_id", referencedColumnName = "id")
     private Offer offer;
 
     @Column(name = "purchase_date")

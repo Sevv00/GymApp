@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -57,6 +59,9 @@ public class Offer {
     //Delete this if a bidirectional relation with Class is not needed
     @OneToOne(mappedBy = "offer", cascade = CascadeType.ALL)
     private ClassEntity classEntity;
+
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Purchase> offerPurchases = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

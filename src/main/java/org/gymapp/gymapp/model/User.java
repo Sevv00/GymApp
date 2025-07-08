@@ -73,6 +73,9 @@ public class User {
     @OneToMany(mappedBy = "registredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ClassRegistration> customerClasses = new HashSet<>();
 
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Purchase> customerPurchases = new HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
