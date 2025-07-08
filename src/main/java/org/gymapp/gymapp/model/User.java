@@ -82,6 +82,9 @@ public class User {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<TrainingPlan> trainingPlansCreated = new HashSet<>();
 
+    @OneToMany(mappedBy = "workoutUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Workout> userWorkouts = new HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

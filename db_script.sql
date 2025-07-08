@@ -88,6 +88,7 @@ CREATE TABLE TrainingPlans (
 -- Table: Workouts
 CREATE TABLE Workouts (
     id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
     user_id INTEGER REFERENCES Users(id) NOT NULL ON DELETE CASCADE,
     training_plan_id INTEGER REFERENCES TrainingPlans(id) NOT NULL ON DELETE CASCADE,
     created_by INTEGER REFERENCES Users(id) ON DELETE SET NULL,

@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -17,31 +15,32 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "TrainingPlans")
-public class TrainingPlan {
+@Table(name = "Workouts")
+public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", length = 100)
+    @Column(name = "name")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User owner;
+    private User workoutUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_plan_id", referencedColumnName = "id", nullable = false)
+    private TrainingPlan trainingPlan;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private User createdBy;
+    private User creator;
 
-    private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Workout> workouts = new HashSet<>();
+    private LocalDateTime creationDate;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        creationDate = LocalDateTime.now();
     }
 }
