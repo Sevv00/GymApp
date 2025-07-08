@@ -23,7 +23,7 @@ public class Purchase {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,6 +35,10 @@ public class Purchase {
 
     @Column(name = "valid_until")
     private LocalDateTime validUntil;
+
+    //Delete this if a bidirectional relation with Class is not needed
+    @OneToOne(mappedBy = "purchaseId", cascade = CascadeType.ALL)
+    private GuestAction guestAction;
 
     @PrePersist
     protected void onCreate() {
