@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Long id;
 
     @Column(name = "name")
