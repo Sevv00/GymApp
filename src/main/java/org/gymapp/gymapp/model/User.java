@@ -76,15 +76,6 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Purchase> customerPurchases = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<TrainingPlan> userTrainingPlans = new HashSet<>();
-
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<TrainingPlan> trainingPlansCreated = new HashSet<>();
-
-    @OneToMany(mappedBy = "workoutUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Workout> userWorkouts = new HashSet<>();
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -22,9 +22,9 @@ Table Users {
 Table Offers {
   id SERIAL [pk]
   offer_name VARCHAR(100) [not null]
-  descrpt TEXT
+  offer_desc TEXT
   price_text VARCHAR(100)
-  price MONEY [not null]
+  price NUMERIC(10,2) [not null]
   duration_days SMALLINT [not null]
   is_permanent BOOLEAN [not null]
   offer_expired_date TIMESTAMP
@@ -39,7 +39,7 @@ Table Classes {
   start_time TIMESTAMP [not null]
   end_time TIMESTAMP [not null]
   instructor_id INT [ref: > Users.id]
-  capacity SMALLINT
+  capacity INT [not null]
 }
 
 Table ClassRegistrations {
@@ -68,60 +68,6 @@ Table GuestActions {
   created_at TIMESTAMP [default: 'CURRENT_TIMESTAMP']
 }
 
-Table TrainingPlans {
-  id SERIAL [pk]
-  user_id INT [ref: > Users.id, not null]
-  created_by INT [ref: > Users.id]
-  created_at TIMESTAMP [default: 'CURRENT_TIMESTAMP']
-}
-
-Table Workouts {
-  id SERIAL [pk]
-  user_id INT [ref: > Users.id, not null]
-  trainingplan_id INT [ref: > TrainingPlans.id]
-  created_by INT [ref: > Users.id]
-  created_at TIMESTAMP [default: 'CURRENT_TIMESTAMP']
-}
-
-Table ExerciseIcons {
-  id SERIAL [pk]
-  icon_name VARCHAR(50)
-  avatar BYTEA
-}
-
-Table Exercises {
-  id SERIAL [pk]
-  exercise_name VARCHAR(100) [not null]
-  user_id INT [ref: > Users.id]
-  created_by INT [ref: > Users.id]
-  created_at TIMESTAMP [default: 'CURRENT_TIMESTAMP']
-  icon_id INT [ref: > ExerciseIcons.id]
-}
-
-Table ExerciseSetNumbers {
-  id SERIAL [pk]
-  exercise_id INT [ref: > Exercises.id, not null]
-  workout_id INT [ref: > Workouts.id, not null]
-  number_of_sets SMALLINT
-}
-
-Table ExerciseSets {
-  id SERIAL [pk]
-  set_id INT [ref: > ExerciseSetNumbers.id, not null]
-  workout_id INT [ref: > Exercises.id, not null]
-  number_of_reps SMALLINT
-  weight_for_set SMALLINT
-  duration INTERVAL 
-}
-
-Table TrainingLogs {
-  id SERIAL [pk]
-  user_id INT [ref: > Users.id, not null]
-  workout_id INT [ref: > Workouts.id]
-  training_date TIMESTAMP [default: 'CURRENT_TIMESTAMP']
-  content JSON
-}
-
 Table Announcements {
   id SERIAL [pk]
   employee_id INT [ref: > Users.id]
@@ -134,7 +80,7 @@ Table Announcements {
 Table GymInfo {
   id SERIAL [pk]
   opening_hours TEXT 
-  descrpt TEXT
+  gym_desc TEXT
   phone_number_1 VARCHAR(15) [not null]
   phone_number_2 VARCHAR(15)
   email_1 VARCHAR(255) [not null]
