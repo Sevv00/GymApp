@@ -79,6 +79,8 @@ public class User {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Announcement> employeeAnnouncements = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<GymAdmission> gymAdmissions = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

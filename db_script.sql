@@ -102,7 +102,7 @@ CREATE TABLE GymInfo (
 -- Table: GymAdmissions
 CREATE TABLE GymAdmissions (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES Users(id) ON DELETE SET NULL,
+    user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE ,
     start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL
 )
@@ -110,7 +110,7 @@ CREATE TABLE GymAdmissions (
 -- Table: Messeges
 CREATE TABLE Messeges (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES Users(id) ON DELETE SET NULL,
+    user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE ,
     sent_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     content TEXT NOT NULL
 )
