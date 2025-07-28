@@ -88,3 +88,17 @@ Table GymInfo {
   updated_by INT [ref: > Users.id, not null]
   updated_at TIMESTAMP [default: 'CURRENT_TIMESTAMP']
 }
+
+Table GymAdmissions {
+  id SERIAL [pk]
+  user_id INT [ref: > Users.id, not null]
+  start_time TIMESTAMP [not null]
+  end_time TIMESTAMP [not null]
+}
+
+Table Messeges{
+  id SERIAL [pk]
+  user_id INT [ref: > Users.id, not null]
+  sent_time TIMESTAMP [not null]
+  content TEXT [not null]
+}

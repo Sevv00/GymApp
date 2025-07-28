@@ -146,11 +146,17 @@ Tabele:
 | Pole                 | Typ                      | Opis                    |
 | -------------------- | ------------------------ | ----------------------- |
 | id                   | SERIAL PRIMARY KEY       | id wejścia              |
+| user_id              | INT REFERENCES Users(id) | id użytkownika          |
+| start_time           | TIMESTAMP                | data wejścia            |
+| end_time             | TIMESTAMP                | data wyjścia            |
 
 10. Messeges
 | Pole                 | Typ                      | Opis                    |
 | -------------------- | ------------------------ | ----------------------- |
 | id                   | SERIAL PRIMARY KEY       | id wiadomości           |
+| user_id              | INT REFERENCES Users(id) | id użytkownika          |
+| sent_time            | TIMESTAMP                | czas wysłania           |
+| content              | TEXT                     | treść wiadomości        |
 
 Relacje:
 - Jeden użytkownik może mieć wiele zakupów, dzienników treningowych i zapisów na zajęcia.
