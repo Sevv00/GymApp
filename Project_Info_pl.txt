@@ -150,7 +150,7 @@ Tabele:
 | start_time           | TIMESTAMP                | data wejścia            |
 | end_time             | TIMESTAMP                | data wyjścia            |
 
-10. Messeges
+10. Messages
 | Pole                 | Typ                      | Opis                    |
 | -------------------- | ------------------------ | ----------------------- |
 | id                   | SERIAL PRIMARY KEY       | id wiadomości           |

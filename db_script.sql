@@ -107,10 +107,10 @@ CREATE TABLE GymAdmissions (
     end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL
 )
 
--- Table: Messeges
-CREATE TABLE Messeges (
+-- Table: Messages
+CREATE TABLE Messages (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE ,
-    sent_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    sent_time TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     content TEXT NOT NULL
 )
