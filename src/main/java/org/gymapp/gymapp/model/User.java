@@ -79,6 +79,7 @@ public class User {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Announcement> employeeAnnouncements = new HashSet<>();
 
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
