@@ -23,11 +23,11 @@ public class ClassRegistration {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User registredUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "class_id", nullable = false)
     private ClassEntity classEntity;
 
     @Column(name = "registered_at", updatable = false)

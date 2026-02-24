@@ -57,14 +57,14 @@ public class UserService {
     }
 
     public UserDTO getUserById(Long id) {
-        User user = userRepo.findById(id.longValue());
-        if (user == null) throw new RuntimeException("Użytkownik nie znaleziony");
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
         return mapToDTO(user);
     }
 
     public UserDTO updateUser(Long id, UserUpdateRequest request) {
-        User user = userRepo.findById(id.longValue());
-        if (user == null) throw new RuntimeException("Użytkownik nie znaleziony");
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
 
         if (request.getFirstName() != null) user.setFirstName(request.getFirstName());
         if (request.getLastName() != null) user.setLastName(request.getLastName());
@@ -82,8 +82,8 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        User user = userRepo.findById(id.longValue());
-        if (user == null) throw new RuntimeException("Użytkownik nie znaleziony");
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
         user.setIsActive(false);
         userRepo.save(user);
     }

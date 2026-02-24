@@ -42,7 +42,8 @@ public class ClassService {
         classEntity.setCapacity(request.getCapacity());
 
         if (request.getInstructorId() != null) {
-            User instructor = userRepo.findById(request.getInstructorId().longValue());
+            User instructor = userRepo.findById(request.getInstructorId().longValue())
+                    .orElseThrow(() -> new RuntimeException("Instruktor nie znaleziony"));
             classEntity.setInstructorId(instructor);
         }
 
@@ -58,7 +59,8 @@ public class ClassService {
         if (request.getEndTime() != null) classEntity.setEndTime(request.getEndTime());
         if (request.getCapacity() != null) classEntity.setCapacity(request.getCapacity());
         if (request.getInstructorId() != null) {
-            User instructor = userRepo.findById(request.getInstructorId().longValue());
+            User instructor = userRepo.findById(request.getInstructorId().longValue())
+                    .orElseThrow(() -> new RuntimeException("Instruktor nie znaleziony"));
             classEntity.setInstructorId(instructor);
         }
 
