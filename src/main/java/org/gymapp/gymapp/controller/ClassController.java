@@ -54,6 +54,11 @@ public class ClassController {
         }
     }
 
+    @GetMapping("/my-registrations")
+    public ResponseEntity<List<Long>> getMyRegistrations(Authentication auth) {
+        return ResponseEntity.ok(classService.getMyRegisteredClassIds(auth.getName()));
+    }
+
     @PostMapping("/{id}/register")
     public ResponseEntity<?> registerForClass(@PathVariable Long id, Authentication auth) {
         try {

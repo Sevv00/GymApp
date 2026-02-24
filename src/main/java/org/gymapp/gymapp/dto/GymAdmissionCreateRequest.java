@@ -1,14 +1,18 @@
 package org.gymapp.gymapp.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class GymAdmissionDTO {
-    private Long id;
+public class GymAdmissionCreateRequest {
+    @NotNull
     private Long userId;
-    private String userName;
+
+    @NotNull
     private LocalDateTime startTime;
+
+    @NotNull
     private LocalDateTime endTime;
 }

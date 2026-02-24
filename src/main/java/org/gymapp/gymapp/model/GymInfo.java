@@ -22,12 +22,10 @@ public class GymInfo {
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Long id = 1L; // Singleton ID
 
-    @Lob
-    @Column(name = "opening_hours")
+    @Column(name = "opening_hours", columnDefinition = "TEXT")
     private String openingHours;
 
-    @Lob
-    @Column(name = "gym_desc")
+    @Column(name = "gym_desc", columnDefinition = "TEXT")
     private String gymDesc;
 
     @Column(name = "phone_number_1", length = 15, nullable = false)

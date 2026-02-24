@@ -6,7 +6,7 @@ import { Purchase, GymAdmission } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { UserCircle, ShoppingBag, Clock, CalendarDays, Save, Trash2, Edit2 } from 'lucide-react';
+import { UserCircle, ShoppingBag, Clock, CalendarDays, Save, Trash2, Edit2, Camera } from 'lucide-react';
 
 export default function LoggedUserPage() {
   const { user, isAuthenticated, logout, refreshUser } = useAuth();
@@ -15,6 +15,7 @@ export default function LoggedUserPage() {
   const [admissions, setAdmissions] = useState<GymAdmission[]>([]);
   const [tab, setTab] = useState<'overview' | 'purchases' | 'admissions' | 'edit'>('overview');
   const [loading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({
     firstName: '',
     lastName: '',
@@ -38,6 +39,14 @@ export default function LoggedUserPage() {
       setAdmissions(aRes.data || []);
       setLoading(false);
     });
+    // Load avatar
+    api.get('/api/users/me/avatar', { responseType: 'blob' })
+      .then((res) => {
+        if (res.data && res.data.size > 0) {
+          setAvatarUrl(URL.createObjectURL(res.data));
+        }
+      })
+      .catch(() => {});
   }, [isAuthenticated]);
 
   useEffect(() => {
@@ -86,6 +95,29 @@ export default function LoggedUserPage() {
     }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Plik jest za duży (max 2MB)');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      await api.post('/api/users/me/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      // Reload avatar
+      const res = await api.get('/api/users/me/avatar', { responseType: 'blob' });
+      if (res.data && res.data.size > 0) {
+        setAvatarUrl(URL.createObjectURL(res.data));
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.error || 'Błąd przesyłania avatara');
+    }
+  };
+
   if (!isAuthenticated) return null;
 
   const activePurchases = purchases.filter((p) => p.validUntil && new Date(p.validUntil) > new Date());
@@ -103,8 +135,27 @@ export default function LoggedUserPage() {
       <Card className="mb-8 overflow-hidden">
         <div className="bg-gradient-to-r from-secondary to-card p-8 border-b">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center">
-              <UserCircle className="w-10 h-10 text-primary-foreground" />
+            <div className="relative group">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt="Avatar"
+                  className="w-16 h-16 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center">
+                  <UserCircle className="w-10 h-10 text-primary-foreground" />
+                </div>
+              )}
+              <label className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <Camera className="w-5 h-5 text-white" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                />
+              </label>
             </div>
             <div>
               <h1 className="text-2xl font-bold">Witaj, {user?.firstName || 'Użytkowniku'}!</h1>
@@ -201,7 +252,7 @@ export default function LoggedUserPage() {
             ) : (
               <div className="divide-y divide-border">
                 {purchases.map((p) => (
-                  <div key={p.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                  <div key={p.id} className="p-4 flex items-center justify-between hover:bg-muted/50 even:bg-muted/20 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                         <ShoppingBag className="w-5 h-5 text-primary" />
@@ -242,7 +293,7 @@ export default function LoggedUserPage() {
             ) : (
               <div className="divide-y divide-border">
                 {admissions.map((a) => (
-                  <div key={a.id} className="p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors">
+                  <div key={a.id} className="p-4 flex items-center gap-3 hover:bg-muted/50 even:bg-muted/20 transition-colors">
                     <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
                       <Clock className="w-5 h-5 text-accent" />
                     </div>

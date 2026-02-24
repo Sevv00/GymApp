@@ -28,6 +28,18 @@ public class PurchaseService {
         Offer offer = offerRepo.findById(request.getOfferId())
                 .orElseThrow(() -> new RuntimeException("Oferta nie znaleziona"));
 
+        // Blokada duplikatu: nie pozwól kupić tej samej oferty czasowej, jeśli jest nadal ważna
+        if (offer.getDurationDays() != null && offer.getDurationDays() > 1) {
+            boolean hasActivePurchase = purchaseRepo.findByBuyerOrderByPurchaseDateDesc(user).stream()
+                    .anyMatch(p -> p.getOffer() != null
+                            && p.getOffer().getId().equals(offer.getId())
+                            && p.getValidUntil() != null
+                            && p.getValidUntil().isAfter(java.time.LocalDateTime.now()));
+            if (hasActivePurchase) {
+                throw new RuntimeException("Posiadasz już aktywny karnet tego typu. Poczekaj aż wygaśnie.");
+            }
+        }
+
         Purchase purchase = new Purchase();
         purchase.setBuyer(user);
         purchase.setOffer(offer);
@@ -69,6 +81,23 @@ public class PurchaseService {
                 .stream().map(this::mapAdmissionToDTO).collect(Collectors.toList());
     }
 
+    public List<GymAdmissionDTO> getAllAdmissions() {
+        return gymAdmissionRepo.findAll().stream()
+                .map(this::mapAdmissionToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public GymAdmissionDTO createAdmission(Long userId, java.time.LocalDateTime startTime, java.time.LocalDateTime endTime) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        GymAdmission admission = new GymAdmission();
+        admission.setUser(user);
+        admission.setStartTime(startTime);
+        admission.setEndTime(endTime);
+        gymAdmissionRepo.save(admission);
+        return mapAdmissionToDTO(admission);
+    }
+
     private PurchaseDTO mapToDTO(Purchase p) {
         PurchaseDTO dto = new PurchaseDTO();
         dto.setId(p.getId());
@@ -89,6 +118,7 @@ public class PurchaseService {
         GymAdmissionDTO dto = new GymAdmissionDTO();
         dto.setId(a.getId());
         dto.setUserId(a.getUser().getId());
+        dto.setUserName(a.getUser().getFirstName() + " " + a.getUser().getLastName());
         dto.setStartTime(a.getStartTime());
         dto.setEndTime(a.getEndTime());
         return dto;

@@ -83,6 +83,7 @@ export interface Purchase {
 export interface GymAdmission {
   id: number;
   userId: number;
+  userName?: string;
   startTime: string;
   endTime: string;
 }

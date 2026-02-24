@@ -6,7 +6,7 @@ import { Offer } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CreditCard, CheckCircle, ArrowLeft } from 'lucide-react';
+import { CreditCard, CheckCircle, ArrowLeft, Percent } from 'lucide-react';
 
 export default function OffersTransaction() {
   const { offerId } = useParams<{ offerId: string }>();
@@ -17,6 +17,7 @@ export default function OffersTransaction() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [hasActiveOffer, setHasActiveOffer] = useState(false);
 
   const [guestForm, setGuestForm] = useState({
     firstName: '',
@@ -36,7 +37,21 @@ export default function OffersTransaction() {
         setError('Nie udało się pobrać oferty');
         setLoading(false);
       });
-  }, [offerId]);
+
+    // Check if user already has an active purchase for this offer
+    if (isAuthenticated) {
+      api.get('/api/purchases/my').then((res) => {
+        const purchases = res.data || [];
+        const active = purchases.some(
+          (p: any) =>
+            p.offerId === Number(offerId) &&
+            p.validUntil &&
+            new Date(p.validUntil) > new Date()
+        );
+        setHasActiveOffer(active);
+      }).catch(() => {});
+    }
+  }, [offerId, isAuthenticated]);
 
   const handleGuestChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGuestForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -102,21 +117,48 @@ export default function OffersTransaction() {
 
       <Card className="overflow-hidden">
         {/* Offer summary */}
-        <div className="bg-gradient-to-r from-secondary to-card p-8 border-b">
-          <h1 className="text-2xl font-bold mb-2">{offer?.offerName}</h1>
-          <div className="text-accent text-3xl font-extrabold">
-            {offer?.priceText || `${offer?.price} zł`}
-          </div>
-          {offer?.offerDescription && (
-            <p className="text-muted-foreground mt-2 text-sm">{offer.offerDescription}</p>
-          )}
-          <p className="text-muted-foreground/70 mt-1 text-sm">
-            Ważność: {offer?.durationDays} dni
-          </p>
-        </div>
+        {(() => {
+          const discountMultiplier = !user?.discount || user.discount === 'NONE' ? 1
+            : user.discount === 'STUDENT' ? 0.8
+            : user.discount === 'MULTISPORT' ? 0.6 : 1;
+          const discountLabel = user?.discount === 'STUDENT' ? '-20% STUDENT'
+            : user?.discount === 'MULTISPORT' ? '-40% MULTISPORT' : null;
+          const hasDiscount = isAuthenticated && discountMultiplier < 1 && offer;
+          const discountedPrice = offer ? (offer.price * discountMultiplier).toFixed(2) : '0';
+          return (
+            <>
+              <div className="bg-gradient-to-r from-secondary to-card p-8 border-b">
+                <h1 className="text-2xl font-bold mb-2">{offer?.offerName}</h1>
+                {hasDiscount ? (
+                  <div>
+                    <div className="text-muted-foreground line-through text-lg">
+                      {offer?.priceText || `${offer?.price} zł`}
+                    </div>
+                    <div className="text-accent text-3xl font-extrabold">
+                      {discountedPrice} zł
+                      <span className="text-sm ml-2 bg-accent/20 px-2 py-0.5 rounded-full">{discountLabel}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-accent text-3xl font-extrabold">
+                    {offer?.priceText || `${offer?.price} zł`}
+                  </div>
+                )}
+                {offer?.offerDescription && (
+                  <p className="text-muted-foreground mt-2 text-sm">{offer.offerDescription}</p>
+                )}
+                <p className="text-muted-foreground/70 mt-1 text-sm">
+                  Ważność: {offer?.durationDays} dni
+                </p>
+              </div>
 
-        {/* Purchase form */}
-        <CardContent className="p-8">
+              {/* Purchase form */}
+              <CardContent className="p-8">
+                {hasDiscount && (
+                  <div className="mb-4 flex items-center gap-2 bg-accent/10 text-accent-foreground dark:text-accent px-4 py-2 rounded-lg text-sm">
+                    <Percent className="w-4 h-4" /> Twoja zniżka {discountLabel} została uwzględniona
+                  </div>
+                )}
           <CardTitle className="flex items-center gap-2 mb-6">
             <CreditCard className="w-6 h-6 text-primary" /> Finalizacja zakupu
           </CardTitle>
@@ -136,8 +178,13 @@ export default function OffersTransaction() {
                 </p>
                 <p className="text-sm text-muted-foreground">{user?.email}</p>
               </div>
-              <Button onClick={handlePurchase} disabled={submitting} className="w-full" size="lg">
-                {submitting ? 'Przetwarzanie...' : 'Potwierdź zakup'}
+              {hasActiveOffer && (
+                <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg mb-6 text-sm">
+                  Posiadasz już aktywny karnet tego typu. Poczekaj aż wygaśnie, zanim kupisz ponownie.
+                </div>
+              )}
+              <Button onClick={handlePurchase} disabled={submitting || hasActiveOffer} className="w-full" size="lg">
+                {hasActiveOffer ? 'Posiadasz aktywny karnet' : submitting ? 'Przetwarzanie...' : 'Potwierdź zakup'}
               </Button>
             </div>
           ) : (
@@ -197,6 +244,9 @@ export default function OffersTransaction() {
             </form>
           )}
         </CardContent>
+            </>
+          );
+        })()}
       </Card>
     </div>
   );

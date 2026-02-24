@@ -51,9 +51,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/offers/**").hasAnyRole("EMPLOYEE", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/offers/**").hasAnyRole("EMPLOYEE", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/classes").hasAnyRole("EMPLOYEE", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/classes/*/register").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/classes/*/unregister").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/classes/**").hasAnyRole("EMPLOYEE", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/classes/**").hasAnyRole("EMPLOYEE", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/gym-info").hasAnyRole("EMPLOYEE", "ADMIN")
+                        .requestMatchers("/api/gym-admissions/**").hasAnyRole("EMPLOYEE", "ADMIN")
                         // Admin only
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // Authenticated

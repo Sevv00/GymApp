@@ -277,7 +277,7 @@ export default function AdminPanel() {
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-muted/30 transition-colors">
+                    <tr key={u.id} className="hover:bg-muted/30 even:bg-muted/20 transition-colors">
                     {editingId === u.id ? (
                       <>
                         <td className="p-3 text-muted-foreground">{u.id}</td>

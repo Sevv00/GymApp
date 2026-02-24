@@ -104,6 +104,19 @@ public class UserService {
         return mapToDTO(user);
     }
 
+    public void uploadAvatar(String email, byte[] avatarData) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        user.setAvatar(avatarData);
+        userRepo.save(user);
+    }
+
+    public byte[] getAvatar(String email) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        return user.getAvatar();
+    }
+
     private UserDTO mapToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());

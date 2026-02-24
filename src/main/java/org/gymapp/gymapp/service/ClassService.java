@@ -72,6 +72,15 @@ public class ClassService {
         classEntityRepo.deleteById(id);
     }
 
+    public List<Long> getMyRegisteredClassIds(String userEmail) {
+        User user = userRepo.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        return user.getCustomerClasses().stream()
+                .filter(ClassRegistration::getIsActive)
+                .map(r -> r.getClassEntity().getId())
+                .collect(Collectors.toList());
+    }
+
     public void registerForClass(Long classId, String userEmail) {
         ClassEntity classEntity = classEntityRepo.findById(classId)
                 .orElseThrow(() -> new RuntimeException("Zajęcia nie znalezione"));
@@ -93,12 +102,19 @@ public class ClassService {
             throw new RuntimeException("Już jesteś zapisany na te zajęcia");
         }
 
-        ClassRegistration registration = new ClassRegistration();
-        registration.setRegistredUser(user);
-        registration.setClassEntity(classEntity);
-        registration.setIsActive(true);
-
-        classRegistrationRepo.save(registration);
+        // Check if there's an existing inactive registration (user previously unregistered)
+        var existingRegistration = classRegistrationRepo.findByRegistredUserAndClassEntity(user, classEntity);
+        if (existingRegistration.isPresent()) {
+            ClassRegistration registration = existingRegistration.get();
+            registration.setIsActive(true);
+            classRegistrationRepo.save(registration);
+        } else {
+            ClassRegistration registration = new ClassRegistration();
+            registration.setRegistredUser(user);
+            registration.setClassEntity(classEntity);
+            registration.setIsActive(true);
+            classRegistrationRepo.save(registration);
+        }
     }
 
     public void unregisterFromClass(Long classId, String userEmail) {

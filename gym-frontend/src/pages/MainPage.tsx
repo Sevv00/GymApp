@@ -1,15 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '@/services/api';
+import { useAuth } from '@/context/AuthContext';
 import { Announcement, GymInfo } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Clock, Phone, Mail, ArrowRight, Megaphone, Dumbbell, Users, Trophy } from 'lucide-react';
 
 export default function MainPage() {
+  const { isAuthenticated } = useAuth();
   const [gymInfo, setGymInfo] = useState<GymInfo | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -45,9 +55,11 @@ export default function MainPage() {
                   Zobacz oferty <ArrowRight className="w-5 h-5 ml-1" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6">
-                <Link to="/register">Dołącz do nas</Link>
-              </Button>
+              {!isAuthenticated && (
+                <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6">
+                  <Link to="/register">Dołącz do nas</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -161,7 +173,11 @@ export default function MainPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {announcements.slice(0, 6).map((a) => (
-                <Card key={a.id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={a.id}
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => setSelectedAnnouncement(a)}
+                >
                   <CardHeader>
                     <CardTitle className="text-accent">{a.title}</CardTitle>
                   </CardHeader>
@@ -177,6 +193,30 @@ export default function MainPage() {
             </div>
           )}
         </div>
+
+        {/* Announcement detail dialog */}
+        <Dialog open={!!selectedAnnouncement} onOpenChange={(open) => !open && setSelectedAnnouncement(null)}>
+          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-accent text-xl">{selectedAnnouncement?.title}</DialogTitle>
+              <DialogDescription className="flex justify-between items-center pt-1">
+                <span>{selectedAnnouncement?.authorName}</span>
+                <span>
+                  {selectedAnnouncement?.createdAt
+                    ? new Date(selectedAnnouncement.createdAt).toLocaleDateString('pl-PL', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })
+                    : ''}
+                </span>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="text-foreground whitespace-pre-line leading-relaxed">
+              {selectedAnnouncement?.content}
+            </div>
+          </DialogContent>
+        </Dialog>
       </section>
 
       {/* CTA */}
