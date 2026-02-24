@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
 
-const LoginPage: React.FC = () => {
+export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -27,69 +30,68 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-[#BCD2EE]/20 to-[#9B7EDE]/10 px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#9B7EDE] rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <LogIn className="w-8 h-8 text-white" />
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+      <Card className="max-w-md w-full">
+        <CardHeader className="text-center">
+          <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center mx-auto mb-2">
+            <LogIn className="w-7 h-7 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-[#030027]">Zaloguj się</h1>
-          <p className="text-gray-500 mt-1">Witaj z powrotem!</p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-[#030027] mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9B7EDE] focus:border-transparent transition"
-              placeholder="twoj@email.pl"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[#030027] mb-1">Hasło</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9B7EDE] focus:border-transparent transition pr-12"
-                placeholder="••••••••"
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+          <CardTitle className="text-2xl">Zaloguj się</CardTitle>
+          <CardDescription>Witaj z powrotem!</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg mb-6 text-sm">
+              {error}
             </div>
-          </div>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#9B7EDE] hover:bg-[#8568c9] text-white py-3 rounded-xl font-bold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Logowanie...' : 'Zaloguj się'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Email</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="twoj@email.pl"
+              />
+            </div>
 
-        <p className="text-center mt-6 text-gray-500 text-sm">
-          Nie masz konta?{' '}
-          <Link to="/register" className="text-[#9B7EDE] font-semibold hover:underline">Zarejestruj się</Link>
-        </p>
-      </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Hasło</label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              {loading ? 'Logowanie...' : 'Zaloguj się'}
+            </Button>
+          </form>
+
+          <p className="text-center mt-6 text-muted-foreground text-sm">
+            Nie masz konta?{' '}
+            <Link to="/register" className="text-primary font-semibold hover:underline">
+              Zarejestruj się
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default LoginPage;
+}
