@@ -66,6 +66,10 @@ export default function AdminPanel() {
   };
 
   const handleSaveEdit = async (id: number) => {
+    if (editForm.phoneNumber && !/^\d{9}$/.test(editForm.phoneNumber)) {
+      setMsg('Numer telefonu musi składać się z dokładnie 9 cyfr');
+      return;
+    }
     try {
       const data: any = { ...editForm };
       if (!data.password) delete data.password;
@@ -91,6 +95,10 @@ export default function AdminPanel() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (createForm.phoneNumber && !/^\d{9}$/.test(createForm.phoneNumber)) {
+      setMsg('Numer telefonu musi składać się z dokładnie 9 cyfr');
+      return;
+    }
     try {
       await api.post(`/api/admin/users?role=${createRole}`, createForm);
       setShowCreate(false);
@@ -194,9 +202,11 @@ export default function AdminPanel() {
                 onChange={(e) => setCreateForm((p) => ({ ...p, lastName: e.target.value }))}
               />
               <Input
-                placeholder="Telefon"
+                placeholder="Telefon (max 9 cyfr)"
                 value={createForm.phoneNumber}
                 onChange={(e) => setCreateForm((p) => ({ ...p, phoneNumber: e.target.value }))}
+                maxLength={9}
+                pattern="\d{9}"
               />
               <div className="sm:col-span-2 lg:col-span-3 flex gap-3">
                 <Button type="submit">Utwórz</Button>

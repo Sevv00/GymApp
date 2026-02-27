@@ -36,7 +36,7 @@ services:
     ports:
       - '8080:8080'
     environment:
-      #SPRING_PROFILES_ACTIVE: seed
+      SPRING_PROFILES_ACTIVE: seed
       POSTGRES_HOST: db
       POSTGRES_DB: '${POSTGRES_DB}'
       POSTGRES_USER: '${POSTGRES_USER}'

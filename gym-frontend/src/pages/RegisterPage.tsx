@@ -43,6 +43,10 @@ export default function RegisterPage() {
       setError('Hasło musi mieć co najmniej 6 znaków');
       return;
     }
+    if (form.phoneNumber && !/^\d{9}$/.test(form.phoneNumber)) {
+      setError('Numer telefonu musi składać się z dokładnie 9 cyfr');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -99,7 +103,7 @@ export default function RegisterPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Numer telefonu</label>
-              <Input type="tel" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} placeholder="+48 123 456 789" />
+              <Input type="tel" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} placeholder="123456789" maxLength={9} pattern="\d{9}" />
             </div>
 
             <div className="space-y-2">

@@ -73,6 +73,10 @@ export default function LoggedUserPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setEditMsg('');
+    if (editForm.phoneNumber && !/^\d{9}$/.test(editForm.phoneNumber)) {
+      setEditMsg('Numer telefonu musi składać się z dokładnie 9 cyfr');
+      return;
+    }
     try {
       const data: any = { ...editForm };
       if (!data.password) delete data.password;
@@ -373,7 +377,13 @@ export default function LoggedUserPage() {
                   name="phoneNumber"
                   value={editForm.phoneNumber}
                   onChange={handleEditChange}
+                  maxLength={9}
+                  pattern="\d{9}"
+                  placeholder="123456789"
                 />
+                {editForm.phoneNumber && !/^\d{9}$/.test(editForm.phoneNumber) && (
+                  <p className="text-xs text-destructive">Numer musi mieć dokładnie 9 cyfr</p>
+                )}
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Zniżka</label>
