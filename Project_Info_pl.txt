@@ -163,7 +163,3 @@ Relacje:
 - Pracownik może dodawać ogłoszenia i prowadzić zajęcia.
 - Administrator ma dostęp do wszystkiego – ale nie wymaga osobnych tabel.
 - Goście nie mają konta, ale ich działania (zakupy) są opcjonalnie zapisywane.
-
-
-DO zapamiętania przed oddaniem:
-hasła: jedyna polityka to minimum 6 znaków

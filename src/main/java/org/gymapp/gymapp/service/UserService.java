@@ -50,7 +50,7 @@ public class UserService {
         userRepo.save(user);
     }
 
-    // --- Admin methods ---
+    //Admin methods
 
     public List<UserDTO> getAllUsers() {
         return userRepo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());

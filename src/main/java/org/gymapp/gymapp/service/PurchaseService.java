@@ -28,7 +28,7 @@ public class PurchaseService {
         Offer offer = offerRepo.findById(request.getOfferId())
                 .orElseThrow(() -> new RuntimeException("Oferta nie znaleziona"));
 
-        // Blokada duplikatu: nie pozwól kupić tej samej oferty czasowej, jeśli jest nadal ważna
+        // Blokada duplikatu: nie mozna drugi raz kupic tej samej oferty, jesli jest to karnet czasowy i jest juz aktywny
         if (offer.getDurationDays() != null && offer.getDurationDays() > 1) {
             boolean hasActivePurchase = purchaseRepo.findByBuyerOrderByPurchaseDateDesc(user).stream()
                     .anyMatch(p -> p.getOffer() != null

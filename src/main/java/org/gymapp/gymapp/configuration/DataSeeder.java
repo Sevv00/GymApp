@@ -51,9 +51,6 @@ public class DataSeeder implements CommandLineRunner {
 
         String hashedPassword = passwordEncoder.encode("Password123!");
 
-        // ========================
-        // 1. UŻYTKOWNICY
-        // ========================
         User admin = createUser("admin@gymapp.pl", "500100200", hashedPassword,
                 "Tomasz", "Wiśniewski", UserRole.ADMIN, UserDiscount.NONE);
 
@@ -92,9 +89,7 @@ public class DataSeeder implements CommandLineRunner {
         client4 = savedUsers.get(6);
         client5 = savedUsers.get(7);
 
-        // ========================
-        // 2. OFERTY
-        // ========================
+
         LocalDateTime now = LocalDateTime.now();
 
         // Karnety
@@ -149,7 +144,6 @@ public class DataSeeder implements CommandLineRunner {
                         wejscieJednorazowe, ofertaYoga, ofertaCrossfit, ofertaSpinning, ofertaPilates));
         log.info("Dodano {} ofert.", savedOffers.size());
 
-        // Odśwież referencje
         ofertaYoga = savedOffers.get(5);
         ofertaCrossfit = savedOffers.get(6);
         ofertaSpinning = savedOffers.get(7);
@@ -160,9 +154,7 @@ public class DataSeeder implements CommandLineRunner {
         karnetStudencki = savedOffers.get(3);
         wejscieJednorazowe = savedOffers.get(4);
 
-        // ========================
-        // 3. ZAJĘCIA GRUPOWE (ClassEntity)
-        // ========================
+
         ClassEntity yoga = createClassEntity(ofertaYoga,
                 now.plusDays(1).withHour(7).withMinute(0).withSecond(0).withNano(0),
                 now.plusDays(1).withHour(8).withMinute(0).withSecond(0).withNano(0),
@@ -191,9 +183,7 @@ public class DataSeeder implements CommandLineRunner {
         spinning = savedClasses.get(2);
         pilates = savedClasses.get(3);
 
-        // ========================
-        // 4. REJESTRACJE NA ZAJĘCIA
-        // ========================
+
         ClassRegistration reg1 = createRegistration(client1, yoga);
         ClassRegistration reg2 = createRegistration(client2, yoga);
         ClassRegistration reg3 = createRegistration(client3, crossfit);
@@ -206,25 +196,20 @@ public class DataSeeder implements CommandLineRunner {
         classRegistrationRepo.saveAll(List.of(reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8));
         log.info("Dodano 8 rejestracji na zajęcia.");
 
-        // ========================
-        // 5. ZAKUPY (Purchases)
-        // ========================
+
         Purchase p1 = createPurchase(client1, karnetMiesięczny, now.minusDays(10), 30);
         Purchase p2 = createPurchase(client2, karnetStudencki, now.minusDays(5), 30);
         Purchase p3 = createPurchase(client3, karnetKwartalny, now.minusDays(60), 90);
         Purchase p4 = createPurchase(client4, karnetRoczny, now.minusDays(120), 365);
         Purchase p5 = createPurchase(client5, karnetStudencki, now.minusDays(15), 30);
         Purchase p6 = createPurchase(client1, wejscieJednorazowe, now.minusDays(30), 1);
-        // Zakup zajęć grupowych
         Purchase p7 = createPurchase(client2, ofertaYoga, now.minusDays(2), 1);
         Purchase p8 = createPurchase(client3, ofertaCrossfit, now.minusDays(1), 1);
 
         List<Purchase> savedPurchases = purchaseRepo.saveAll(List.of(p1, p2, p3, p4, p5, p6, p7, p8));
         log.info("Dodano {} zakupów.", savedPurchases.size());
 
-        // ========================
-        // 6. OGŁOSZENIA
-        // ========================
+
         Announcement a1 = createAnnouncement(employee1,
                 "Nowe godziny otwarcia!",
                 "Od przyszłego tygodnia siłownia będzie czynna od 5:00 do 23:00! " +
@@ -252,9 +237,7 @@ public class DataSeeder implements CommandLineRunner {
         announcementRepo.saveAll(List.of(a1, a2, a3, a4));
         log.info("Dodano 4 ogłoszenia.");
 
-        // ========================
-        // 7. INFORMACJE O SIŁOWNI (singleton)
-        // ========================
+
         GymInfo gymInfo = new GymInfo();
         gymInfo.setId(1L);
         gymInfo.setOpeningHours(
@@ -282,10 +265,7 @@ public class DataSeeder implements CommandLineRunner {
         gymInfoRepo.save(gymInfo);
         log.info("Dodano informacje o siłowni.");
 
-        // ========================
-        // 8. WEJŚCIA NA SIŁOWNIĘ (GymAdmissions)
-        // ========================
-        // Historia wejść z ostatnich dni
+
         GymAdmission ga1 = createAdmission(client1, now.minusDays(1).withHour(8).withMinute(0), now.minusDays(1).withHour(9).withMinute(30));
         GymAdmission ga2 = createAdmission(client1, now.minusDays(3).withHour(17).withMinute(15), now.minusDays(3).withHour(18).withMinute(45));
         GymAdmission ga3 = createAdmission(client2, now.minusDays(1).withHour(10).withMinute(0), now.minusDays(1).withHour(11).withMinute(15));
@@ -302,9 +282,7 @@ public class DataSeeder implements CommandLineRunner {
         gymAdmissionRepo.saveAll(List.of(ga1, ga2, ga3, ga4, ga5, ga6, ga7, ga8, ga9, ga10, ga11, ga12));
         log.info("Dodano 12 wejść na siłownię.");
 
-        // ========================
-        // 9. WIADOMOŚCI
-        // ========================
+
         Message m1 = createMessage(client1,
                 "Cześć! Czy jest możliwość zawieszenia karnetu na czas urlopu? Wyjeżdżam na 2 tygodnie.",
                 now.minusDays(5));
@@ -328,9 +306,7 @@ public class DataSeeder implements CommandLineRunner {
         messageRepo.saveAll(List.of(m1, m2, m3, m4, m5));
         log.info("Dodano 5 wiadomości.");
 
-        // ========================
-        // 10. AKCJE GOŚCI (GuestActions)
-        // ========================
+
         Purchase guestPurchase1 = createPurchase(null, wejscieJednorazowe, now.minusDays(7), 1);
         Purchase guestPurchase2 = createPurchase(null, ofertaYoga, now.minusDays(3), 1);
         List<Purchase> guestPurchases = purchaseRepo.saveAll(List.of(guestPurchase1, guestPurchase2));
@@ -362,9 +338,6 @@ public class DataSeeder implements CommandLineRunner {
         log.info("  ... (wszystkie konta mają hasło: Password123!)");
     }
 
-    // ========================
-    // METODY POMOCNICZE
-    // ========================
 
     private User createUser(String email, String phone, String hashedPassword,
                             String firstName, String lastName, UserRole role, UserDiscount discount) {
